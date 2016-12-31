@@ -37,10 +37,11 @@ class Chessboard:
         piece.col = new_col
         self.pieces[new_col][new_row] = piece
         assert not self.inCheck(), "A king is in check."
-    def inCheck(self):
+    def inCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.
         return False #TODO
 class Chesspiece:
     canPromote = False
+    checked = False
     def __init__(self, row, col, color):
         self.row = row
         self.col = col
@@ -61,13 +62,13 @@ class Pawn(Chesspiece):
         destination = board.pieces[new_col][new_row]
         if not Chesspiece.legalMove(board, new_col, new_row):
             return False
-        if self.color = "white":
+        if self.color == "white":
             if new_row == self.row + 1 and new_col == self.col and not destination:
                 return True
             else:
                 if not destination:
                     return False
-                elif new_row == self.row + 1 and (new_col == self.col + 1 or new_col == self.col - 1) and destination.color != self.color:
+                elif new_row == self.row + 1 and abs(new_col-self.col)==1 and destination.color != self.color:
                     return True
         else:
             if new_row == self.row - 1 and new_col == self.col and not destination:
@@ -75,10 +76,16 @@ class Pawn(Chesspiece):
             else:
                 if not destination:
                     return False
-                elif new_row == self.row - 1 and (new_col == self.col + 1 or new_col == self.col - 1) and destination.color != self.color:
+                elif new_row == self.row - 1 and abs(new_col-self.col)==1 and destination.color != self.color:
                     return True        
 class Knight(Chesspiece):
-
+    def legalMove(self, board, new_col, new_row):
+        if not Chesspiece.legalMove(board, new_col, new_row):
+            return False
+        if abs(new_row - self.row) == 2 and abs(new_col - self.col) == 1:
+            return True
+        elif abs(new_row - self.row) == 1 and abs(new_col - self.col) == 2:
+            return True
 class Bishop(Chesspiece):
 
 class Rook(Chesspiece):
