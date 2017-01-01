@@ -58,8 +58,11 @@ class Queen(Chesspiece):
             return False
 class King(Chesspiece):
     def legalMove(self, board, new_col, new_row, color):
-        if abs(self.col - new_col) <= 1 and abs(self.row - new_row) <= 1 and not (self.col == new_col and self.row == new_row):
-            return Chesspiece.legalMove(self, board, new_col, new_row)
+        if abs(self.col - new_col) <= 1 and abs(self.row - new_row) <= 1 
+            if not (self.col == new_col and self.row == new_row):
+                return Chesspiece.legalMove(self, board, new_col, new_row)
+            return False
+        return False
 class Pawn(Chesspiece):
     def legalMove(self, board, new_col, new_row, color):
         destination = board.pieces[new_col][new_row]
