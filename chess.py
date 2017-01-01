@@ -36,8 +36,8 @@ class Chessboard:
         piece.row = new_row
         piece.col = new_col
         self.pieces[new_col][new_row] = piece
-        assert not self.inCheck(), "A king is in check."
-    def inCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.
+        assert not self.isInCheck(), "A king is in check." #Change from assert statement later
+    def isInCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.
         return False #TODO
 class Chesspiece:
     canPromote = False
@@ -48,19 +48,22 @@ class Chesspiece:
         self.color = color
     def legalMove(self, board, new_col, new_row):
         #inside the board, no piece in destination that is your piece
-        return new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0 and board.pieces[new_col][new_row].color != self.color
-        #Change so that it works when there is no piece on the new location.
+        if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0:
+            return board.pieces[new_col][new_row] == None or board.pieces[new_col][new_row].color != self.color
 class Queen(Chesspiece):
-    def legalMove(self, board, new_col, new_row):
-        if #something something something
+    def legalMove(self, board, new_col, new_row, color):
+        if Chesspiece.legalMove(self, board, new_col, new_row)
+           return Rook.legalMove(self, board, new_col, new_row) or Bishop.legalMove(self, board, new_col, new_row)
+        else
             return False
-        return Chesspiece.legalMove(board, new_col, new_row)
 class King(Chesspiece):
-
+    def legalMove(self, board, new_col, new_row, color):
+        if abs(self.col - new_col) <= 1 and abs(self.row - new_row) <= 1 and not (self.col == new_col and self.row == new_row):
+            return Chesspiece.legalMove(self, board, new_col, new_row)
 class Pawn(Chesspiece):
-    def legalMove(self, board, new_col, new_row):
+    def legalMove(self, board, new_col, new_row, color):
         destination = board.pieces[new_col][new_row]
-        if not Chesspiece.legalMove(board, new_col, new_row):
+        if not Chesspiece.legalMove(self, board, new_col, new_row):
             return False
         if self.color == "white":
             if new_row == self.row + 1 and new_col == self.col and not destination:
@@ -79,17 +82,17 @@ class Pawn(Chesspiece):
                 elif new_row == self.row - 1 and abs(new_col-self.col)==1 and destination.color != self.color:
                     return True
 class Knight(Chesspiece):
-    def legalMove(self, board, new_col, new_row):
-        if not Chesspiece.legalMove(board, new_col, new_row):
-            return False
+    def legalMove(self, board, new_col, new_row, color):
         if abs(new_row - self.row) == 2 and abs(new_col - self.col) == 1:
-            return True
+            return Chesspiece.legalMove(self, board, new_col, new_row)
         elif abs(new_row - self.row) == 1 and abs(new_col - self.col) == 2:
-            return True
+            return Chesspiece.legalMove(self, board, new_col, new_row)
+        else:
+            return False
 class Bishop(Chesspiece):
-    def legalMove(self, board, new_col, new_row):
+    def legalMove(self, board, new_col, new_row, color):
         destination = board.pieces[new_col][new_row]
-        if not Chesspiece.legalMove(board, new_col, new_row):
+        if not Chesspiece.legalMove(self, board, new_col, new_row):
             return False
         if not abs(self.row - new_row) == abs(self.col - new_col):
             return False
@@ -102,9 +105,9 @@ class Bishop(Chesspiece):
         return True
 
 class Rook(Chesspiece):
-    def legalMove(self, board, new_col, new_row):
+    def legalMove(self, board, new_col, new_row, color):
         destination = board.pieces[new_col][new_row]
-        if not Chesspiece.legalMove(board, new_col, new_row):
+        if not Chesspiece.legalMove(self, board, new_col, new_row):
             return False
         if not (self.col == new_col or self.row == new_row):
             return False
