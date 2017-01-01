@@ -77,7 +77,7 @@ class Pawn(Chesspiece):
                 if not destination:
                     return False
                 elif new_row == self.row - 1 and abs(new_col-self.col)==1 and destination.color != self.color:
-                    return True        
+                    return True
 class Knight(Chesspiece):
     def legalMove(self, board, new_col, new_row):
         if not Chesspiece.legalMove(board, new_col, new_row):
@@ -87,5 +87,31 @@ class Knight(Chesspiece):
         elif abs(new_row - self.row) == 1 and abs(new_col - self.col) == 2:
             return True
 class Bishop(Chesspiece):
+    def legalMove(self, board, new_col, new_row):
+        destination = board.pieces[new_col][new_row]
+        if not Chesspiece.legalMove(board, new_col, new_row):
+            return False
+        if not abs(self.row - new_row) == abs(self.col - new_col):
+            return False
+        for i, j in zip(range(1, self.col - new.col), range(1, self.row - new.row)):
+            if board.pieces[self.col + i][self.row + j]:
+                return False
+        if destination:
+            if destination.color == self.color:
+                return False
+        return True
 
 class Rook(Chesspiece):
+    def legalMove(self, board, new_col, new_row):
+        destination = board.pieces[new_col][new_row]
+        if not Chesspiece.legalMove(board, new_col, new_row):
+            return False
+        if not (self.col == new_col or self.row == new_row):
+            return False
+        for i, j in zip(range(1, self.col - new.col), range(1, self.row - new.row)):
+            if board.pieces[self.col + i][self.row + j]:
+                return False
+        if destination:
+            if destination.color == self.color:
+                return False
+        return True
