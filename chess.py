@@ -13,11 +13,11 @@ class Game:
         wpawn6 = Pawn(5, 1, "white", "p")
         wpawn7 = Pawn(6, 1, "white", "p")
         wpawn8 = Pawn(7, 1, "white", "p")
-        wrook1 = Rook(0, 0, "white", "p")
+        wrook1 = Rook(0, 0, "white", "r")
         wknight1 = Knight(1, 0, "white", "n")
         wbishop1 = Bishop(2, 0, "white", "b")
         wqueen = Queen(3, 0, "white", "q")
-        wking = King(4, 0, "white", "k")
+        wking = King(4, 0, "white", "K")
         wbishop2 = Bishop(5, 0, "white", "b")
         wknight2 = Knight(6, 0, "white", "n")
         wrook2 = Rook(7, 0, "white", "r")
@@ -30,7 +30,7 @@ class Game:
         bpawn6 = Pawn(5, 6, "black", "p")
         bpawn7 = Pawn(6, 6, "black", "p")
         bpawn8 = Pawn(7, 6, "black", "p")
-        brook1 = Rook(0, 7, "black", "p")
+        brook1 = Rook(0, 7, "black", "r")
         bknight1 = Knight(1, 7, "black", "n")
         bbishop1 = Bishop(2, 7, "black", "b")
         bqueen = Queen(3, 7, "black", "q")
@@ -41,8 +41,8 @@ class Game:
 
         self.board.pieces[0] = [wrook1, wknight1, wbishop1, wqueen, wking, wbishop2, wknight2, wrook2]
         self.board.pieces[1] = [wpawn1, wpawn2, wpawn3, wpawn4, wpawn5, wpawn6, wpawn7, wpawn8]
-        self.board.pieces[7] = [brook1, bknight1, bbishop1, bqueen, bking, bbishop2, bknight2, brook2]
         self.board.pieces[6] = [bpawn1, bpawn2, bpawn3, bpawn4, bpawn5, bpawn6, bpawn7, bpawn8]
+        self.board.pieces[7] = [brook1, bknight1, bbishop1, bqueen, bking, bbishop2, bknight2, brook2]
 
 class Chessboard:
     def __init__(self):
@@ -52,10 +52,10 @@ class Chessboard:
         self.pieces = []
         for i in range(8):
             self.pieces.append(rows)
-    def __str__(self):
-        #prints board
-        for i in range(8):
-            for j in range(8):
+    def display(self):
+        #prints board, starting with (0, 7) in the top left and ending with (7, 0) in the bottom right.
+        for j in range(7, -1 ,-1):
+            for i in range(8):
                 if self.getPiece(i, j):
                     print(self.getPiece(i, j), end=' ')
                 else:
@@ -63,16 +63,16 @@ class Chessboard:
             print()
     def getPiece(self, col, row):
         #returns piece in location with row and col, returns None if no piece
-        return self.pieces[col][row]
+        return self.pieces[row][col]
     def getLocation(self, piece):
         assert getPiece(piece.col, piece.row) == piece, "piece missing/not in right position: %r" % piece
         return piece.row, piece.col
     def setPosition(self, piece, new_col, new_row):
         assert piece.color == self.turn
-        self.pieces[piece.col][piece.row] = None
+        self.pieces[piece.row][piece.col] = None
         piece.row = new_row
         piece.col = new_col
-        self.pieces[new_col][new_row] = piece
+        self.pieces[new_row][new_col] = piece
         if self.turn == "white":
             self.turn = "black"
         else:
@@ -94,14 +94,16 @@ class Chesspiece:
         self.col = col
         self.color = color
         self.name = name
+    def __str__(self):
+        return self.name
     def legalMove(self, board, new_col, new_row):
         #inside the board, no piece in destination that is your piece
         if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0:
             return board.pieces[new_col][new_row] == None or board.pieces[new_col][new_row].color != self.color
 class Queen(Chesspiece):
     def legalMove(self, board, new_col, new_row, color):
-        if Chesspiece.legalMove(self, board, new_col, new_row):
-           return Rook.legalMove(self, board, new_col, new_row) or Bishop.legalMove(self, board, new_col, new_row)
+        if Chesspiece.legalMove(board, new_col, new_row, color):
+           return Rook.legalMove(self, board, new_col, new_row, color) or Bishop.legalMove(self, board, new_col, new_row, color)
         else:
            return False
 class King(Chesspiece):
