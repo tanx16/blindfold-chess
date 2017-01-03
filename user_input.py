@@ -26,7 +26,8 @@ def begin():
         if answer[:3] == "get":
             col = column_names[answer[4]]
             row = int(answer[5]) - 1
-            print(new_chessboard.getPiece(col, row))
+            piece = new_chessboard.getPiece(col, row)
+            print(piece, piece.color if piece else piece)
         try:
             orig_row = int(answer[2]) - 1
             new_row = int(answer[4]) - 1
