@@ -16,3 +16,7 @@ Summary: A basic chess program that allows 2 players to play a game of regular o
  * "Points": Shows the value of the pieces taken. Q:9 R:5 B:3 N:2.5 P:1
     
  * "start"
+ 
+Progress so far:
+ * Made text-based GUI for testing
+ * Basic commands work (kind of)
