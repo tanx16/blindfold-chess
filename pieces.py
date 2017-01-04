@@ -5,11 +5,11 @@ class Chesspiece:
         self.row = row
         self.col = col
         self.color = color
+        self.moved = False
     def __str__(self):
         return self.name
     def legalMove(self, board, new_col, new_row):
         #inside the board, no piece in destination that is your piece, is your piece
-        print(new_col, new_row)
         if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0 and self.color == board.turn:
             return board.pieces[new_row][new_col] == None or board.pieces[new_row][new_col].color != self.color
 class Queen(Chesspiece):
@@ -34,23 +34,27 @@ class Pawn(Chesspiece):
         if not Chesspiece.legalMove(self, board, new_col, new_row):
             return False
         if self.color == "white":
-            if new_row == self.row + 1 and new_col == self.col and not destination:
-                return True
-            else:
-                if new_row == self.row + 1 and abs(new_col-self.col)==1:
-                    if not destination:
-                        return False
-                    else:
-                        return destination.color != self.color
+            direction = 1
         else:
-            if new_row == self.row - 1 and new_col == self.col and not destination:
+            direction = -1
+        if new_col == self.col and not destination:
+            if new_row == self.row + direction:
+                return True
+            elif new_row == self.row + 2*direction and not self.moved:
+                board.doubleMoved = 2
                 return True
             else:
-                if new_row == self.row - 1 and abs(new_col-self.col)==1:
-                    if not destination:
-                        return False
-                    else:
-                        return destination.color != self.color
+                return False
+        elif new_row == self.row + direction and abs(new_col - self.col) == 1: 
+            if destination:
+                return True
+            elif isinstance(board.pieces[self.row][new_col], Pawn) and board.doubleMoved > 0:
+                board.takePiece(new_col, new_row - direction) #Captures the doubleMoved pawn
+                return True
+            else:
+                return False
+        else:
+            return False
 class Knight(Chesspiece):
     name = "n"
     def legalMove(self, board, new_col, new_row):

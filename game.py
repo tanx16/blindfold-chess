@@ -51,6 +51,7 @@ class Chessboard:
         #creates matrix that represents board current state
         self.turn = "white"
         self.pieces = []
+        self.doubleMoved = 0 #Used for en passant
         for i in range(8):
             self.pieces.append([None, None, None, None, None, None, None, None])
     def display(self):
@@ -72,17 +73,25 @@ class Chessboard:
         self.pieces[piece.row][piece.col] = None
         piece.row = new_row
         piece.col = new_col
-        self.pieces[new_row][new_col] = piece
+        self.addPiece(piece, new_col, new_row)
+        if self.doubleMoved > 0:
+            self.doubleMoved -= 1
         if self.turn == "white":
             self.turn = "black"
         else:
             self.turn = "white"
         #assert not self.isInCheck(), "A king is in check." #Change from assert statement later
     def addPiece(self, piece, new_col, new_row):
-        self.pieces[new_col][new_row] = piece
+        if self.pieces[new_row][new_col]:
+            self.takePiece(new_col, new_row) #So we can keep track of taken pieces
+        self.pieces[new_row][new_col] = piece
+    def takePiece(self, col, row):
+        #Possibly keep track of taken pieces here
+        self.pieces[row][col] = None
     def move(self, piece, new_col, new_row):
         if piece.legalMove(self, new_col, new_row):
             self.setPosition(piece, new_col, new_row)
+            piece.moved = True
         else:
             print("Please enter a valid move.")
 
