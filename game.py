@@ -1,12 +1,12 @@
 import string
 from pieces import *
+import sys
 
 class Game:
     def __init__(self, board):
         #self.board is instance of Chessboard
         self.over = False
         self.board = board
-
         wpawn1 = Pawn(0, 1, "white")
         wpawn2 = Pawn(1, 1, "white")
         wpawn3 = Pawn(2, 1, "white")
@@ -45,7 +45,10 @@ class Game:
         self.board.pieces[1] = [wpawn1, wpawn2, wpawn3, wpawn4, wpawn5, wpawn6, wpawn7, wpawn8]
         self.board.pieces[6] = [bpawn1, bpawn2, bpawn3, bpawn4, bpawn5, bpawn6, bpawn7, bpawn8]
         self.board.pieces[7] = [brook1, bknight1, bbishop1, bqueen, bking, bbishop2, bknight2, brook2]
-
+        """
+        self.board.addPiece(Pawn(4, 6, "white"), 4, 6)
+        self.board.addPiece(Pawn(4, 1, "black"), 4, 1)
+        """
 class Chessboard:
     def __init__(self):
         #creates matrix that represents board current state
@@ -81,18 +84,27 @@ class Chessboard:
         else:
             self.turn = "white"
         #assert not self.isInCheck(), "A king is in check." #Change from assert statement later
-    def addPiece(self, piece, new_col, new_row):
-        if self.pieces[new_row][new_col]:
-            self.takePiece(new_col, new_row) #So we can keep track of taken pieces
-        self.pieces[new_row][new_col] = piece
+    def addPiece(self, piece, col, row):
+        if self.pieces[row][col]:
+            self.takePiece(col, row) #So we can keep track of taken pieces
+        self.pieces[row][col] = piece
     def takePiece(self, col, row):
         #Possibly keep track of taken pieces here
         self.pieces[row][col] = None
+    def promote(self, piece): #Add error handling later
+        pieces = {"b": Bishop(piece.col, piece.row, piece.color), "n": Knight(piece.col, piece.row, piece.color), "r": Rook(piece.col, piece.row, piece.color), "q": Queen(piece.col, piece.row, piece.color)}
+        new_piece = input("Promote pawn to? \n").lower()
+        if new_piece.lower() in pieces:
+            self.addPiece(pieces[new_piece], piece.col, piece.row)
+        else:
+            print("Invalid piece.")
+            self.promote(piece)
     def move(self, piece, new_col, new_row):
         if piece.legalMove(self, new_col, new_row):
             self.setPosition(piece, new_col, new_row)
             piece.moved = True
+            if piece.name == "p" and (new_row == 7 or new_row == 0):
+                self.promote(piece)
         else:
             print("Please enter a valid move.")
-
     #def isInCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.

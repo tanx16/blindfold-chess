@@ -7,7 +7,7 @@ class Chesspiece:
         self.color = color
         self.moved = False
     def __str__(self):
-        return self.name
+        return self.name # + " (" + self.color + ")"
     def legalMove(self, board, new_col, new_row):
         #inside the board, no piece in destination that is your piece, is your piece
         if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0 and self.color == board.turn:
