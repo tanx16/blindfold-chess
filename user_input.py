@@ -1,4 +1,5 @@
-from chess import *
+from pieces import *
+from game import *
 import sys
 
 new_chessboard = Chessboard()
@@ -10,6 +11,7 @@ def start():
     if answer.lower() == "y":
         print("Here are the instructions.")
         print("To input a coordinate, enter the first letter of the piece, and then the column and number you want and where the piece comes from. Ex. Pb2b3 to move pawn to b3 from b2.\n")
+        print("To castle, type qcastle or kcastle for the appropriate side.")
         print("Since knight and king both start with k, use n for knight. Have fun!")
         begin()
     elif answer.lower() == "n":
@@ -28,6 +30,13 @@ def begin():
             row = int(answer[5]) - 1
             piece = new_chessboard.getPiece(col, row)
             print(piece, piece.color if piece else piece)
+        if answer == "qcastle" or answer == "kcastle":
+            if new_game.board.turn == "white":
+                new_game.board.white_side_castle(answer[0])
+                continue
+            else:
+                new_game.board.black_side_castle(answer[0])
+                continue
         try:
             orig_row = int(answer[2]) - 1
             new_row = int(answer[4]) - 1
