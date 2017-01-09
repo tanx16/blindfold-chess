@@ -19,4 +19,4 @@ Summary: A basic chess program that allows 2 players to play a game of regular o
  
 Progress so far:
  * Made text-based GUI for testing
- * Basic commands work (kind of)
+ * Game works. Check, checkmate, and stalemate not implemented so play at your own risk!
