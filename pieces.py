@@ -27,6 +27,41 @@ class King(Chesspiece):
                 return Chesspiece.legalMove(self, board, new_col, new_row)
             return False
         return False
+    def legalCastle(self, board, side):
+        if side == "k":
+            if self.color == "white":
+                rook_piece = board.pieces[0][7]
+                if self.moved or rook_piece.moved:
+                    return False
+                for i in board.pieces[0][5:7]:
+                    if i:
+                        return False
+                return True
+            else:
+                rook_piece = board.pieces[7][7]
+                if self.moved or rook_piece.moved:
+                    return False
+                for i in board.pieces[7][5:7]:
+                    if i:
+                        return False
+                return True
+        if side == "q":
+            if self.color == "white":
+                rook_piece = board.pieces[0][0]
+                if self.moved or rook_piece.moved:
+                    return False
+                for i in board.pieces[0][1:4]:
+                    if i:
+                        return False
+                return True
+            else:
+                rook_piece = board.pieces[7][0]
+                if self.moved or rook_piece.moved:
+                    return False
+                for i in board.pieces[7][1:4]:
+                    if i:
+                        return False
+                return True
 class Pawn(Chesspiece):
     name = "p"
     def legalMove(self, board, new_col, new_row):
@@ -45,7 +80,7 @@ class Pawn(Chesspiece):
                 return True
             else:
                 return False
-        elif new_row == self.row + direction and abs(new_col - self.col) == 1: 
+        elif new_row == self.row + direction and abs(new_col - self.col) == 1:
             if destination:
                 return True
             elif isinstance(board.pieces[self.row][new_col], Pawn) and board.doubleMoved > 0:

@@ -79,10 +79,6 @@ class Chessboard:
         self.addPiece(piece, new_col, new_row)
         if self.doubleMoved > 0:
             self.doubleMoved -= 1
-        if self.turn == "white":
-            self.turn = "black"
-        else:
-            self.turn = "white"
         #assert not self.isInCheck(), "A king is in check." #Change from assert statement later
     def addPiece(self, piece, col, row):
         if self.pieces[row][col]:
@@ -105,6 +101,41 @@ class Chessboard:
             piece.moved = True
             if piece.name == "p" and (new_row == 7 or new_row == 0):
                 self.promote(piece)
+            if self.turn == "white":
+                self.turn = "black"
+            else:
+                self.turn = "white"
         else:
             print("Please enter a valid move.")
+    def white_side_castle(self, side):
+        king_piece = self.pieces[0][4]
+        if king_piece.legalCastle(self, side):
+            if side == "k":
+                rook_piece = self.pieces[0][7]
+                self.setPosition(king_piece, 6, 0)
+                self.setPosition(rook_piece, 5, 0)
+            else:
+                rook_piece = self.pieces[0][0]
+                self.setPosition(king_piece, 2, 0)
+                self.setPosition(rook_piece, 3, 0)
+            if self.turn == "white":
+                self.turn = "black"
+            else:
+                self.turn = "white"
+    def black_side_castle(self, side):
+        king_piece = self.pieces[7][4]
+        if king_piece.legalCastle(self, side):
+            if side == "k":
+                rook_piece = self.pieces[7][7]
+                self.setPosition(king_piece, 6, 7)
+                self.setPosition(rook_piece, 5, 7)
+            else:
+                rook_piece = self.pieces[7][0]
+                self.setPosition(king_piece, 2, 7)
+                self.setPosition(rook_piece, 3, 7)
+            if self.turn == "white":
+                self.turn = "black"
+            else:
+                self.turn = "white"
+
     #def isInCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.
