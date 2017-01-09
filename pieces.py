@@ -1,3 +1,4 @@
+from game import *
 class Chesspiece:
     canPromote = False
     checked = False
@@ -10,7 +11,7 @@ class Chesspiece:
         return self.name # + " (" + self.color + ")"
     def legalMove(self, board, new_col, new_row):
         #inside the board, no piece in destination that is your piece, is your piece
-        if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0 and self.color == board.turn:
+        if new_col < 8 and new_col >= 0 and new_row < 8 and new_row >= 0 and self.color == board.turn and not board.kingInCheck(board.kingPos):
             return board.pieces[new_row][new_col] == None or board.pieces[new_row][new_col].color != self.color
 class Queen(Chesspiece):
     name = "q"
@@ -36,6 +37,9 @@ class King(Chesspiece):
                 for i in board.pieces[0][5:7]:
                     if i:
                         return False
+                for j in range(5, 7):
+                    if kingInCheck(0, j):
+                        return False
                 return True
             else:
                 rook_piece = board.pieces[7][7]
@@ -43,6 +47,9 @@ class King(Chesspiece):
                     return False
                 for i in board.pieces[7][5:7]:
                     if i:
+                        return False
+                for j in range(5, 7):
+                    if kingInCheck(7, j):
                         return False
                 return True
         if side == "q":
@@ -53,6 +60,9 @@ class King(Chesspiece):
                 for i in board.pieces[0][1:4]:
                     if i:
                         return False
+                for j in range(1, 4):
+                    if kingInCheck(7, j):
+                        return False
                 return True
             else:
                 rook_piece = board.pieces[7][0]
@@ -60,6 +70,9 @@ class King(Chesspiece):
                     return False
                 for i in board.pieces[7][1:4]:
                     if i:
+                        return False
+                for j in range(1, 4):
+                    if kingInCheck(0, j):
                         return False
                 return True
 class Pawn(Chesspiece):

@@ -55,6 +55,8 @@ class Chessboard:
         self.turn = "white"
         self.pieces = []
         self.doubleMoved = 0 #Used for en passant
+        self.kingPos = (4, 0)
+        self.otherKingPos = (4, 7)
         for i in range(8):
             self.pieces.append([None, None, None, None, None, None, None, None])
     def display(self):
@@ -101,6 +103,9 @@ class Chessboard:
             piece.moved = True
             if piece.name == "p" and (new_row == 7 or new_row == 0):
                 self.promote(piece)
+            if piece.name == "k":
+                self.kingPos = (new_col, new_row)
+            self.kingPos, self.otherKingPos = self.otherKingPos, self.kingPos
             if self.turn == "white":
                 self.turn = "black"
             else:
@@ -122,6 +127,8 @@ class Chessboard:
                 self.turn = "black"
             else:
                 self.turn = "white"
+        else:
+            print("Cannot castle.")
     def black_side_castle(self, side):
         king_piece = self.pieces[7][4]
         if king_piece.legalCastle(self, side):
@@ -137,5 +144,8 @@ class Chessboard:
                 self.turn = "black"
             else:
                 self.turn = "white"
+        else:
+            print("Cannot castle.")
 
-    #def isInCheck(self, newposition): #Checks if the new position (a matrix of pieces) has a king under check.
+    def kingInCheck(self, col, row): #Checks if the king would be in check at (row, col)
+        return False
