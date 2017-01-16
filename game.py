@@ -152,7 +152,7 @@ class Chessboard:
         """
         This works by generating lists of places to look for the checking piece.
         """
-        if self.color == "white":
+        if self.turn == "white":
             direction = 1
         else:
             direction = -1
@@ -163,22 +163,66 @@ class Chessboard:
         #Generates 4 positions where there is a piece that could be a rook
         for i in range(row+1, 8):
             if self.getPiece(col, i):
-                rooklist.append((col, i))
+                rookList.append((col, i))
                 break #is this right?
         for j in range(-1, row-1):
             if self.getPiece(col, j):
-                rooklist.append((col, j))
+                rookList.append((col, j))
                 break #ditto
         for k in range(-1, col-1):    
             if self.getPiece(k, row):
-                rooklist.append((k, row))
+                rookList.append((k, row))
                 break
         for l in range(col+1, 8):    
             if self.getPiece(k, row):
-                rooklist.append((k, row))
+                rookList.append((k, row))
                 break
         bishopList = []
-        for m in range(0, 4):
-           if self.getPiece(col+m, row+m): 
-                return False
+        tempc, tempr = col+1, row+1
+        while tempc<8 and tempr<8:
+            if self.getPiece(tempc, tempr):
+                bishopList.append((tempc, tempr))
+                break
+            tempc, tempr = tempc+1, tempr+1
+        tempc, tempr = col-1, row-1
+        while tempc>0 and tempr>0:
+            if self.getPiece(tempc, tempr):
+                bishopList.append((tempc, tempr))
+                break
+            tempc, tempr = tempc-1, tempr-1
+        tempc, tempr = col+1, row-1
+        while tempc<8 and tempr>0:
+            if self.getPiece(tempc, tempr):
+                bishopList.append((tempc, tempr))
+                break
+            tempc, tempr = tempc+1, tempr-1
+        tempc, tempr = col-1, row+1
+        while tempc>0 and tempr<8:
+            if self.getPiece(tempc, tempr):
+                bishopList.append((tempc, tempr))
+                break
+            tempc, tempr = tempc-1, tempr+1
+
+        for w in bishopList:
+            b = self.getPiece(w[0], w[1])
+            if b and b.color != self.turn and (b.name == 'b' or b.name == 'q'):
+                print("Bishop checking.")
+                return True
+        for x in rookList:
+            r = self.getPiece(x[0], x[1])
+            if r and r.color != self.turn and (r.name == 'r' or r.name == 'q'):
+                print("Rook checking.")
+                return True
+        for y in pawnList:
+            p = self.getPiece(y[0], y[1])
+            if p and p.color!= self.turn and  p.name == 'p':
+                print("Pawn checking.")
+                return True
+        for z in knightList:
+            if z[0]>0 and z[0]<8 and z[1]>0 and z[1]<8:
+                n = self.getPiece(z[0], z[1])
+                if n and n.color!= self.turn and n.name == 'n':
+                    print("Knight checking.")
+                    print(n.col, n.row)
+                    return True
         return False

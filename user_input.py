@@ -42,7 +42,7 @@ def begin():
             new_row = int(answer[4]) - 1
             name = answer[0]
         except (ValueError, IndexError):
-            print("Please enter a valid command.")
+            print("Please enter a valid command. (ValueError/IndexError occurred.)")
             begin()
         if orig_row > 7 or orig_row < 0 or new_row > 7 or new_row < 0:
             print("Please enter a valid row.")
@@ -56,5 +56,5 @@ def begin():
                 continue
             new_game.board.move(piece, new_col, new_row)
         except (KeyError, AttributeError):
-            print("Please enter a valid command.")
+            print("Please enter a valid command. (KeyError/AttributeError occurred.)")
 start()
