@@ -70,6 +70,7 @@ class Chessboard:
             print()
     def getPiece(self, col, row):
         #returns piece in location with row and col, returns None if no piece
+        #Needs error checking for locs off the board
         return self.pieces[row][col]
     def getLocation(self, piece):
         assert getPiece(piece.col, piece.row) == piece, "piece missing/not in right position: %r" % piece
@@ -148,4 +149,36 @@ class Chessboard:
             print("Cannot castle.")
 
     def kingInCheck(self, col, row): #Checks if the king would be in check at (row, col)
+        """
+        This works by generating lists of places to look for the checking piece.
+        """
+        if self.color == "white":
+            direction = 1
+        else:
+            direction = -1
+        pawnList = [(col+1, row+direction), (col-1, row+direction)]
+        #Any way to describe all possible combinations of +-1 and +-2?
+        knightList = [(col+1, row+2), (col+1, row-2), (col-1, row+2), (col-1, row-2), (col+2, row+1), (col+2, row-1), (col-2, row+1), (col-2, row-1)]
+        rookList = []
+        #Generates 4 positions where there is a piece that could be a rook
+        for i in range(row+1, 8):
+            if self.getPiece(col, i):
+                rooklist.append((col, i))
+                break #is this right?
+        for j in range(-1, row-1):
+            if self.getPiece(col, j):
+                rooklist.append((col, j))
+                break #ditto
+        for k in range(-1, col-1):    
+            if self.getPiece(k, row):
+                rooklist.append((k, row))
+                break
+        for l in range(col+1, 8):    
+            if self.getPiece(k, row):
+                rooklist.append((k, row))
+                break
+        bishopList = []
+        for m in range(0, 4):
+           if self.getPiece(col+m, row+m): 
+                return False
         return False
